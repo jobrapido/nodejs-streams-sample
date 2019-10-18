@@ -1,8 +1,8 @@
-import { runner } from "../src/app";
+import { startRunner } from "../src/app";
 
 describe("Main application", () => {
 
   it("should be able to be instantiated", () => {
-    expect(runner).toBeDefined();
+    expect(startRunner).toBeDefined();
   });
 });
