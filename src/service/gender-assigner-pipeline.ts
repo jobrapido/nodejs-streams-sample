@@ -4,23 +4,23 @@ import { Stringifier } from "csv-stringify";
 import { Readable, Writable } from "stream";
 import { ApplicationConfig } from "../config";
 import { logger } from "../logger";
-import { AssignLabelTransformStream } from "../stream/assign-label";
+import { AssignGenderTransformStream } from "../stream/assign-gender";
 import { BufferTransformStream } from "../stream/buffer-stream";
 import { InputDecoderTransformStream } from "../stream/input-decoder";
 
 @injectable()
-export class LabelAssignerPipeline {
+export class GenderAssignerPipeline {
 
   constructor(
     private readonly configs: ApplicationConfig,
     private readonly inputDecoder: InputDecoderTransformStream,
     private readonly bufferTransformStream: BufferTransformStream,
-    private readonly assignLabelTransformStream: AssignLabelTransformStream,
+    private readonly assignGenderTransformStream: AssignGenderTransformStream,
     @inject("fs:input") private readonly fsInput: Readable,
     @inject("fs:output") private readonly fsOutput: Writable,
   ) { }
 
-  public assignLabel() {
+  public assignGender() {
     return new Promise(async (resolve, reject) => {
 
       const csvParser = new Parser({ trim: true });
@@ -37,7 +37,7 @@ export class LabelAssignerPipeline {
           .pipe(csvParser)
           .pipe(this.inputDecoder)
           .pipe(this.bufferTransformStream)
-          .pipe(this.assignLabelTransformStream)
+          .pipe(this.assignGenderTransformStream)
           .pipe(new Stringifier({}))
           .pipe(this.fsOutput
             .on("close", async () => {

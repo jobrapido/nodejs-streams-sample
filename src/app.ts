@@ -3,13 +3,13 @@ import { Container, injectable, Provider, Scope } from "@msiviero/knit";
 import * as fs from "fs";
 import { ApplicationConfig } from "./config";
 import { logger } from "./logger";
-import { LabelAssignerPipeline } from "./service/label-assigner-pipeline";
+import { GenderAssignerPipeline } from "./service/gender-assigner-pipeline";
 
 @injectable()
 class Application {
 
   constructor(
-    private readonly pipeline: LabelAssignerPipeline,
+    private readonly pipeline: GenderAssignerPipeline,
     private readonly configs: ApplicationConfig,
   ) { }
 
@@ -19,20 +19,20 @@ class Application {
 
     this
       .pipeline
-      .assignLabel()
-      .then(() => logger.info(`AssignLabel pipeline processed`))
+      .assignGender()
+      .then(() => logger.info(`AssignGender pipeline processed`))
       .catch((error) => logger.error(`Pipeline error [message=${error.message}]`, error));
   }
 }
 
-export const runner = () => {
+export const startRunner = () => {
   Container
     .getInstance()
     .registerProvider("fs:input", class implements Provider<fs.ReadStream> {
-      public provide = () => fs.createReadStream("input.csv");
+      public provide = () => fs.createReadStream("data/input/input.csv");
     }, Scope.Singleton)
     .registerProvider("fs:output", class implements Provider<fs.WriteStream> {
-      public provide = () => fs.createWriteStream("output.csv");
+      public provide = () => fs.createWriteStream("data/output/output.csv");
     }, Scope.Singleton)
     .resolve(Application)
     .run();

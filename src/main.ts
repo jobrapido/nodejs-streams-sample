@@ -1,4 +1,4 @@
 #!/usr/bin/env node
-import { runner } from "./app";
+import * as app from "./app";
 
-runner();
+app.startRunner();

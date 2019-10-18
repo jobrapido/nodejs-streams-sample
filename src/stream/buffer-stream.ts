@@ -24,10 +24,10 @@ export class BufferTransformStream extends Transform {
 
   public _flush(callback: TransformCallback) {
     if (this.buffer.length > 0) {
-      logger.info("BufferTransformStream flushed...");
+      logger.debug("Flushing buffer");
       this.push(this.flushBuffer());
     } else {
-      logger.info("flushed... callback");
+      logger.debug("Buffer is already empty");
     }
     callback();
   }

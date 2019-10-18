@@ -1,10 +1,10 @@
 {
-  "name": "label-assigner",
+  "name": "gender-assigner",
   "version": "1.0.0",
   "main": "./dist/main.js",
   "license": "UNLICENSED",
   "bin": {
-    "label-assigner": "./dist/main.js"
+    "gender-assigner": "./dist/main.js"
   },
   "pkg": {
     "targets": [
@@ -14,10 +14,10 @@
       "latest-win-x64"
     ]
   },
-  "description": "Generated project - label-assigner",
+  "description": "Generated project - gender-assigner",
   "scripts": {
     "build": "npm run-script clean && npm run-script lint && tsc -p ./tsconfig.build.json",
-    "pkg": "npm run-script build && pkg . --output ./bin/label-assigner",
+    "pkg": "npm run-script build && pkg . --output ./bin/gender-assigner",
     "test": "jest --detectOpenHandles",
     "lint": "tslint -c ./tslint.json -p tsconfig.json",
     "clean": "rimraf dist && rimraf bin",
@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@msiviero/knit": "^1.2.5",
-    "csv-parse": "^4.3.4",
+    "csv-parse": "^4.6.3",
     "csv-stringify": "^5.3.0",
     "dotenv": "^8.0.0",
     "stopcock": "^1.1.0",

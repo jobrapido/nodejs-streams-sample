@@ -1,12 +1,8 @@
-export interface Record {
+export interface Person {
   readonly name: string;
 }
 
-export interface RecordWithLabel extends Record {
+export interface PersonWithGender extends Person {
   readonly gender: string;
   readonly probability: string;
-}
-
-export interface RecordWithCount extends Record {
-  readonly count: number;
 }
