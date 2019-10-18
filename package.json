@@ -1,0 +1,49 @@
+{
+  "name": "label-assigner",
+  "version": "1.0.0",
+  "main": "./dist/main.js",
+  "license": "UNLICENSED",
+  "bin": {
+    "label-assigner": "./dist/main.js"
+  },
+  "pkg": {
+    "targets": [
+      "latest-macos-x64",
+      "latest-linux-x64",
+      "latest-alpine-x64",
+      "latest-win-x64"
+    ]
+  },
+  "description": "Generated project - label-assigner",
+  "scripts": {
+    "build": "npm run-script clean && npm run-script lint && tsc -p ./tsconfig.build.json",
+    "pkg": "npm run-script build && pkg . --output ./bin/label-assigner",
+    "test": "jest --detectOpenHandles",
+    "lint": "tslint -c ./tslint.json -p tsconfig.json",
+    "clean": "rimraf dist && rimraf bin",
+    "deploy": "npm run-script lint && npm run-script build && npm publish --access public"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/jest": "^24.0.11",
+    "@types/node": "^11.11.3",
+    "@types/pino": "^5.8.5",
+    "@types/csv-stringify": "^1.4.3",
+    "jest": "^24.5.0",
+    "pkg": "^4.3.7",
+    "rimraf": "^2.6.3",
+    "ts-jest": "^24.0.0",
+    "ts-node": "^8.0.3",
+    "tslint": "^5.14.0",
+    "typescript": "^3.3.3333"
+  },
+  "dependencies": {
+    "@msiviero/knit": "^1.2.5",
+    "csv-parse": "^4.3.4",
+    "csv-stringify": "^5.3.0",
+    "dotenv": "^8.0.0",
+    "stopcock": "^1.1.0",
+    "typed-rest-client": "^1.5.0",
+    "winston": "^3.2.1"
+  }
+}
