@@ -16,12 +16,11 @@
   },
   "description": "Generated project - gender-assigner",
   "scripts": {
+    "start": "node_modules/.bin/ts-node src/main.ts",
     "build": "npm run-script clean && npm run-script lint && tsc -p ./tsconfig.build.json",
-    "pkg": "npm run-script build && pkg . --output ./bin/gender-assigner",
     "test": "jest --detectOpenHandles",
     "lint": "tslint -c ./tslint.json -p tsconfig.json",
-    "clean": "rimraf dist && rimraf bin",
-    "deploy": "npm run-script lint && npm run-script build && npm publish --access public"
+    "clean": "rimraf dist && rimraf bin"
   },
   "devDependencies": {
     "@types/dotenv": "^6.1.1",
