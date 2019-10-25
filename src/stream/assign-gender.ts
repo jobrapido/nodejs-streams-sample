@@ -40,8 +40,8 @@ export class AssignGenderTransformStream extends Transform {
   private async retrieveGender(name: string): Promise<PersonWithGender> {
     return new Promise<PersonWithGender>((resolve, _) => {
       this.genderizeAPI.genderize(name)
-        .then((result: any) => {
-          const person: PersonWithGender = {
+        .then((result) => {
+          const person = {
             name,
             gender: result.gender || this.DEFAULT_GENDER,
             probability: result.probability || this.DEFAULT_PROBABILITY,

@@ -78,4 +78,55 @@ describe("Gender assigner module", () => {
     Times.once());
 
   });
+
+  it("should return default values when genderize api throws error", async () => {
+
+    const configs = Mock.ofType(ApplicationConfig);
+    const genderizeApi = Mock.ofType(GenderizeAPI);
+    const resultName1 = {name: "name1", gender: "male", probability: "0.99"};
+
+    genderizeApi.setup((instance) => instance
+      .genderize("name1"))
+      .returns(() => Promise.resolve(resultName1));
+
+    genderizeApi.setup((instance) => instance
+      .genderize("name2"))
+      .returns(() => Promise.reject(new Error("fake error")));
+
+    const inputDecoder = new InputDecoderTransformStream();
+    const bufferTransformStream = new BufferTransformStream(configs.object);
+    const assignGenderTransformStream = new  AssignGenderTransformStream(genderizeApi.object);
+
+    const chunk = `name1\nname2\n`;
+    const inputStream = TestInputStream.fromBuffers(Buffer.from(chunk));
+    inputStream.pipe(process.stdout);
+
+    const outputStream = TestOutStream.asBufferedStream<Buffer>();
+
+    const underTest = new GenderAssignerPipeline(
+      configs.object,
+      inputDecoder,
+      bufferTransformStream,
+      assignGenderTransformStream,
+      inputStream,
+      outputStream,
+    );
+
+    await underTest.assignGender();
+
+    expect(outputStream.written().map((b) => b.toString("utf-8")))
+      .toEqual([
+        "name1,male,0.99\n",
+        "name2,NP,0.0\n",
+      ]);
+
+    genderizeApi.verify(
+    (instance) => instance.genderize("name1"),
+    Times.once());
+
+    genderizeApi.verify(
+    (instance) => instance.genderize("name2"),
+    Times.once());
+
+  });
 });
