@@ -61,5 +61,4 @@ export class AssignGenderTransformStream extends Transform {
         });
     });
   }
-
 }
