@@ -1,7 +1,7 @@
 
 import { injectable } from "@msiviero/knit";
+import { GenderAssignerPipeline } from "./gender-assigner-pipeline";
 import { logger } from "./logger";
-import { GenderAssignerPipeline } from "./service/gender-assigner-pipeline";
 
 @injectable()
 export class Application {
@@ -20,4 +20,3 @@ export class Application {
       .catch((error) => logger.error(`Pipeline error [message=${error.message}]`, error));
   }
 }
-

@@ -2,11 +2,11 @@ import { inject, injectable } from "@msiviero/knit";
 import { Parser } from "csv-parse";
 import { Stringifier } from "csv-stringify";
 import { Readable, Writable } from "stream";
-import { ApplicationConfig } from "../config";
-import { logger } from "../logger";
-import { AssignGenderTransformStream } from "../stream/assign-gender";
-import { BufferTransformStream } from "../stream/buffer-stream";
-import { InputDecoderTransformStream } from "../stream/input-decoder";
+import { ApplicationConfig } from "./config";
+import { logger } from "./logger";
+import { AssignGenderTransformStream } from "./stream/assign-gender";
+import { BufferTransformStream } from "./stream/buffer-stream";
+import { InputDecoderTransformStream } from "./stream/input-decoder";
 
 @injectable()
 export class GenderAssignerPipeline {

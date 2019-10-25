@@ -1,11 +1,11 @@
 import { Mock, Times } from "typemoq";
-import { ApplicationConfig } from "../../src/config";
-import {GenderAssignerPipeline} from "../../src/service/gender-assigner-pipeline";
-import { GenderizeAPI } from "../../src/service/genderize-api";
-import { AssignGenderTransformStream } from "../../src/stream/assign-gender";
-import { BufferTransformStream } from "../../src/stream/buffer-stream";
-import { InputDecoderTransformStream } from "../../src/stream/input-decoder";
-import { TestInputStream, TestOutStream } from "../test-stream";
+import { ApplicationConfig } from "../src/config";
+import {GenderAssignerPipeline} from "../src/gender-assigner-pipeline";
+import { GenderizeAPI } from "../src/service/genderize-api";
+import { AssignGenderTransformStream } from "../src/stream/assign-gender";
+import { BufferTransformStream } from "../src/stream/buffer-stream";
+import { InputDecoderTransformStream } from "../src/stream/input-decoder";
+import { TestInputStream, TestOutStream } from "./test-stream";
 
 describe("Gender assigner module", () => {
 

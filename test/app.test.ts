@@ -1,6 +1,6 @@
 import { Mock, Times } from "typemoq";
 import { Application } from "../src/app";
-import { GenderAssignerPipeline } from "../src/service/gender-assigner-pipeline";
+import { GenderAssignerPipeline } from "../src/gender-assigner-pipeline";
 
 describe("App module", () => {
 
