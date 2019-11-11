@@ -21,8 +21,7 @@ export class AssignGenderTransformStream extends Transform {
 
   public _transform(people: Person[], _: string, callback: TransformCallback) {
     Promise.all(
-      people.map((person: Person) => this.retrieveGender(person.name)),
-    )
+      people.map((person: Person) => this.retrieveGender(person.name)))
       .then((results: PersonWithGender[]) => {
         results.forEach((result) => {
           this.push(result);
@@ -30,9 +29,7 @@ export class AssignGenderTransformStream extends Transform {
         callback();
       })
       .catch((error: any) => {
-        logger.error(
-          `Error in AssignGenderTransformStream [error=${error.message}]`,
-        );
+        logger.error(`Error in AssignGenderTransformStream [error=${error.message}]`);
         callback();
       });
   }
