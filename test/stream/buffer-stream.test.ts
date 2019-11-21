@@ -5,9 +5,8 @@ import { TestInputStream } from "../test-stream";
 
 describe("buffer transform stream test suite", () => {
 
-    const configs = Mock.ofType(ApplicationConfig);
-
     it("should buffer correctly", (done) => {
+        const configs = Mock.ofType(ApplicationConfig);
         configs.setup((instance) => instance.BUFFER_SIZE).returns(() => 2);
 
         const underTest = new BufferTransformStream(configs.object);
@@ -35,6 +34,7 @@ describe("buffer transform stream test suite", () => {
     });
 
     it("should flush correctly", (done) => {
+        const configs = Mock.ofType(ApplicationConfig);
         configs.setup((instance) => instance.BUFFER_SIZE).returns(() => 3);
 
         const underTest = new BufferTransformStream(configs.object);

@@ -10,7 +10,7 @@ describe("genderize api test suite", () => {
     let clock: lolex.Clock;
     const mockRestClient = Mock.ofType(RestClient);
     const configs = Mock.ofType(ApplicationConfig);
-    configs.setup((instance) => instance.MAX_SERP_REQUESTS_PER_SECONDS).returns(() => 1);
+    configs.setup((instance) => instance.MAX_REQUESTS_PER_SECONDS).returns(() => 1);
 
     const successResponse = {
         headers: {},
@@ -84,7 +84,7 @@ describe("genderize api test suite", () => {
         clock.tick(1000);
     });
 
-    it("should limit calls to serp service", async () => {
+    it("should limit calls to genderize service", async () => {
         const multipleRequestsMockClient = Mock.ofType(RestClient);
         multipleRequestsMockClient
           .setup((instance) => instance.get(It.isAny(), It.isAny()))

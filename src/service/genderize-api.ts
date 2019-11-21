@@ -17,7 +17,7 @@ export class GenderizeAPI {
     ) {
       if (limited) {
       this.genderize = stopcock(this.genderize, {
-        limit:  configs.MAX_SERP_REQUESTS_PER_SECONDS,
+        limit:  configs.MAX_REQUESTS_PER_SECONDS,
         bucketSize: 1,
         interval: 1000,
       });

@@ -10,9 +10,9 @@ import { TestInputStream, TestOutStream } from "./test-stream";
 describe("Gender assigner module", () => {
 
   it("test pipeline", async () => {
-
+    const genderizeApi = Mock.ofType<GenderizeAPI>();
     const configs = Mock.ofType(ApplicationConfig);
-    const genderizeApi = Mock.ofType(GenderizeAPI);
+
     const resultName1 = {name: "name1", gender: "male", probability: "0.99"};
     const resultName2 = {name: "name2", gender: "female", probability: "0.59"};
     const resultName3 = {name: "name3", gender: "male", probability: "0.99"};
@@ -80,9 +80,9 @@ describe("Gender assigner module", () => {
   });
 
   it("should return default values when genderize api throws error", async () => {
-
+    const genderizeApi = Mock.ofType<GenderizeAPI>();
     const configs = Mock.ofType(ApplicationConfig);
-    const genderizeApi = Mock.ofType(GenderizeAPI);
+
     const resultName1 = {name: "name1", gender: "male", probability: "0.99"};
 
     genderizeApi.setup((instance) => instance

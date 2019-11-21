@@ -14,6 +14,6 @@ export class ApplicationConfig {
   public readonly LOCAL_INPUT_FILE_NAME = process.env.LOCAL_INPUT_FILE_NAME || "input.csv";
   public readonly LOCAL_OUTPUT_FILE_NAME = process.env.LOCAL_OUTPUT_FILE_NAME || "output.csv";
   public readonly SAMPLE_SIZE = parseInt(process.env.SAMPLE_SIZE || "100", 10);
-  public readonly MAX_SERP_REQUESTS_PER_SECONDS = parseInt(process.env.MAX_SERP_REQUESTS_PER_SECONDS || "10", 10);
+  public readonly MAX_REQUESTS_PER_SECONDS = parseInt(process.env.MAX_REQUESTS_PER_SECONDS || "10", 10);
 
 }

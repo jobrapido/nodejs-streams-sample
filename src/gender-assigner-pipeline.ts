@@ -33,7 +33,7 @@ export class GenderAssignerPipeline {
       } = this.configs;
 
       try {
-        logger.info("try...." + LOCAL_INPUT_FILE_NAME + LOCAL_OUTPUT_FILE_NAME);
+        logger.info(`Starting assign gender pipeline [in=${LOCAL_INPUT_FILE_NAME}, out=${LOCAL_OUTPUT_FILE_NAME}]`);
         this
           .fsInput
           .pipe(csvParser)
