@@ -8,9 +8,7 @@ const GENDERIZE_API_URL = "https://api.genderize.io";
 @injectable(Scope.Singleton)
 export class GenderizeAPI {
 
-  private client = new RestClient("gender-assigner", undefined, undefined, {
-    socketTimeout: 2000,
-  });
+  constructor(private readonly client: RestClient) {}
 
   public async genderize(name: string) {
     const response = await this.client
