@@ -7,6 +7,7 @@ import { logger } from "./logger";
 import { AssignGenderTransformStream } from "./stream/assign-gender";
 import { BufferTransformStream } from "./stream/buffer-stream";
 import { InputDecoderTransformStream } from "./stream/input-decoder";
+import {MetricStream} from "./stream/metric-stream";
 
 @injectable()
 export class GenderAssignerPipeline {
@@ -28,6 +29,7 @@ export class GenderAssignerPipeline {
       const {
         LOCAL_INPUT_FILE_NAME,
         LOCAL_OUTPUT_FILE_NAME,
+        SAMPLE_SIZE,
       } = this.configs;
 
       try {
@@ -39,6 +41,10 @@ export class GenderAssignerPipeline {
           .pipe(this.bufferTransformStream)
           .pipe(this.assignGenderTransformStream)
           .pipe(new Stringifier({}))
+          .pipe(new MetricStream(SAMPLE_SIZE))
+          .on("metrics", (throughput: number) => {
+            logger.info(`Current metrics throughput: ${throughput} elements/sec`);
+          })
           .pipe(this.fsOutput
             .on("close", async () => {
               logger.info("Finished");

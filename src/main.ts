@@ -15,5 +15,8 @@ Container
     .registerProvider("rest:client", class implements Provider<RestClient> {
     public provide = () => new RestClient("genderize-rest-client", undefined, undefined, {socketTimeout: 2000});
     }, Scope.Singleton)
+    .registerProvider("config:search-limited", class implements Provider<boolean> {
+    public provide = () => true;
+    }, Scope.Singleton)
     .resolve(Application)
     .start();

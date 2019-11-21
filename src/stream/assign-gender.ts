@@ -1,5 +1,4 @@
 import { injectable, Scope } from "@msiviero/knit";
-import * as stopcock from "stopcock";
 import { Transform, TransformCallback } from "stream";
 import { logger } from "../logger";
 import { GenderizeAPI } from "../service/genderize-api";
@@ -12,11 +11,6 @@ export class AssignGenderTransformStream extends Transform {
 
   constructor(private readonly genderizeAPI: GenderizeAPI) {
     super({ objectMode: true });
-    this.retrieveGender = stopcock(this.retrieveGender, {
-      limit: 1,
-      bucketSize: 1,
-      interval: 100,
-    });
   }
 
   public _transform(people: Person[], _: string, callback: TransformCallback) {

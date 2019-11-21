@@ -1,11 +1,14 @@
 import { RestClient } from "typed-rest-client";
 import { It, Mock, Times } from "typemoq";
+import { ApplicationConfig } from "../../src/config";
 import { GenderizeAPI } from "../../src/service/genderize-api";
 import { PersonWithGender } from "../../src/stream/types";
 
 describe("genderize api test suite", () => {
 
     const mockRestClient = Mock.ofType(RestClient);
+    const configs = Mock.ofType(ApplicationConfig);
+    configs.setup((instance) => instance.MAX_SERP_REQUESTS_PER_SECONDS).returns(() => 1);
 
     const successResponse = {
         headers: {},
@@ -28,7 +31,7 @@ describe("genderize api test suite", () => {
       });
 
     it("should return result from api when api call is successful", async () => {
-        const underTest = new GenderizeAPI(mockRestClient.object);
+        const underTest = new GenderizeAPI(mockRestClient.object, configs.object);
 
         mockRestClient.setup((instance) => instance
         .get(It.isAnyString(), It.isAny()))
@@ -46,7 +49,7 @@ describe("genderize api test suite", () => {
     });
 
     it("should return result from api when api call is successful", (done) => {
-        const underTest = new GenderizeAPI(mockRestClient.object);
+        const underTest = new GenderizeAPI(mockRestClient.object, configs.object);
 
         mockRestClient.setup((instance) => instance
         .get(It.isAnyString(), It.isAny()))
