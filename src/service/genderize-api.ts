@@ -1,4 +1,4 @@
-import { injectable, Scope } from "@msiviero/knit";
+import { inject, injectable, Scope } from "@msiviero/knit";
 import { HttpCodes } from "typed-rest-client/HttpClient";
 import { RestClient } from "typed-rest-client/RestClient";
 import { PersonWithGender } from "../stream/types";
@@ -8,7 +8,7 @@ const GENDERIZE_API_URL = "https://api.genderize.io";
 @injectable(Scope.Singleton)
 export class GenderizeAPI {
 
-  constructor(private readonly client: RestClient) {}
+  constructor(@inject("rest:client") private readonly client: RestClient) {}
 
   public async genderize(name: string) {
     const response = await this.client

@@ -12,8 +12,8 @@ Container
     .registerProvider("fs:output", class implements Provider<fs.WriteStream> {
     public provide = () => fs.createWriteStream("data/output/output.csv");
     }, Scope.Singleton)
-    .registerProvider("genderize-rest-client", class implements Provider<RestClient> {
-    public provide = () => new RestClient("gender-assigner", undefined, undefined, {socketTimeout: 2000});
+    .registerProvider("rest:client", class implements Provider<RestClient> {
+    public provide = () => new RestClient("genderize-rest-client", undefined, undefined, {socketTimeout: 2000});
     }, Scope.Singleton)
     .resolve(Application)
     .start();
