@@ -20,7 +20,7 @@ export class MetricStream extends Transform {
 
     if (this.sampleItems % this.sampleRate === 0) {
       const end = process.hrtime(this.sampleStartTime);
-      const sampleDuration = end[0] + end[1] / 1000 / 1000 / 1000; // end[0]=seconds, end[1]=nanoseconds
+      const sampleDuration = end[0] + end[1] / 1e9; // end[0]=seconds, end[1]=nanoseconds
       this.emit("metrics", (this.sampleItems / sampleDuration).toFixed(3));
       this.sampleItems = 0;
     }
