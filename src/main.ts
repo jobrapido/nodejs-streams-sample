@@ -4,6 +4,7 @@ import { Parser } from "csv-parse";
 import * as fs from "fs";
 import { RestClient } from "typed-rest-client";
 import { Application } from "./app";
+import { Stringifier } from "csv-stringify";
 
 Container.getInstance()
   .registerProvider(
@@ -34,6 +35,13 @@ Container.getInstance()
     "csv:parser",
     class implements Provider<Parser> {
       public provide = () => new Parser({ trim: true });
+    },
+    Scope.Singleton
+  )
+  .registerProvider(
+    "csv:stringifier",
+    class implements Provider<Stringifier> {
+      public provide = () => new Stringifier({});
     },
     Scope.Singleton
   )

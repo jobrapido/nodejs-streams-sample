@@ -7,7 +7,7 @@ import { logger } from "./logger";
 import { AssignGenderTransformStream } from "./stream/assign-gender";
 import { BufferTransformStream } from "./stream/buffer-stream";
 import { InputDecoderTransformStream } from "./stream/input-decoder";
-import { MetricStream } from "./stream/metric-stream";
+import { MetricStream, MetricEvents } from "./stream/metric-stream";
 
 @injectable()
 export class GenderAssignerPipeline {
@@ -16,6 +16,8 @@ export class GenderAssignerPipeline {
     private readonly inputDecoder: InputDecoderTransformStream,
     private readonly bufferTransformStream: BufferTransformStream,
     private readonly assignGenderTransformStream: AssignGenderTransformStream,
+    private readonly metricStream: MetricStream,
+    @inject("csv:stringifier") private readonly stringifier: Stringifier,
     @inject("csv:parser") private readonly csvParser: Parser,
     @inject("fs:input") private readonly fsInput: Readable,
     @inject("fs:output") private readonly fsOutput: Writable
@@ -23,11 +25,7 @@ export class GenderAssignerPipeline {
 
   public assignGender() {
     return new Promise(async (resolve, reject) => {
-      const {
-        LOCAL_INPUT_FILE_NAME,
-        LOCAL_OUTPUT_FILE_NAME,
-        SAMPLE_SIZE
-      } = this.configs;
+      const { LOCAL_INPUT_FILE_NAME, LOCAL_OUTPUT_FILE_NAME } = this.configs;
 
       try {
         logger.info(
@@ -38,22 +36,21 @@ export class GenderAssignerPipeline {
           .pipe(this.inputDecoder)
           .pipe(this.bufferTransformStream)
           .pipe(this.assignGenderTransformStream)
-          .pipe(new Stringifier({}))
-          .pipe(new MetricStream(SAMPLE_SIZE))
-          .on("metrics", (throughput: number) => {
-            logger.info(
-              `Current metrics throughput: ${throughput} elements/sec`
-            );
-          })
-          .pipe(
-            this.fsOutput.on("close", async () => {
-              logger.info("Finished");
-              resolve();
-            })
-          );
+          .pipe(this.stringifier)
+          .pipe(this.metricStream)
+          .on(MetricEvents.THROUGHPUT, this.logThroughput)
+          .pipe(this.fsOutput)
+          .on("close", async () => {
+            logger.info("Finished");
+            resolve();
+          });
       } catch (e) {
         reject(e);
       }
     });
+  }
+
+  private logThroughput(throughput: number) {
+    logger.info(`Current metrics throughput: ${throughput} elements/sec`);
   }
 }

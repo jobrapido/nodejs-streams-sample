@@ -15,39 +15,45 @@ export class AssignGenderTransformStream extends Transform {
 
   public _transform(people: Person[], _: string, callback: TransformCallback) {
     Promise.all(
-      people.map((person: Person) => this.retrieveGender(person.name)))
+      people.map((person: Person) => this.retrieveGender(person.name))
+    )
       .then((results: PersonWithGender[]) => {
-        results.forEach((result) => {
+        results.forEach(result => {
           this.push(result);
         });
         callback();
       })
       .catch((error: any) => {
-        logger.error(`Error in AssignGenderTransformStream [error=${error.message}]`);
+        logger.error(
+          `Error in AssignGenderTransformStream [error=${error.message}]`
+        );
         callback();
       });
   }
 
   private async retrieveGender(name: string): Promise<PersonWithGender> {
     return new Promise<PersonWithGender>((resolve, _) => {
-      this.genderizeAPI.genderize(name)
-        .then((result) => {
+      this.genderizeAPI
+        .genderize(name)
+        .then(result => {
           const person = {
             name,
             gender: result.gender || this.DEFAULT_GENDER,
-            probability: result.probability || this.DEFAULT_PROBABILITY,
+            probability: result.probability || this.DEFAULT_PROBABILITY
           };
 
-          logger.debug(`Name: ${person.name} - Gender: ${person.gender} - Probability: ${person.probability}`);
+          logger.debug(
+            `Name: ${person.name} - Gender: ${person.gender} - Probability: ${person.probability}`
+          );
 
           resolve(person);
         })
-        .catch((error) => {
+        .catch(error => {
           logger.error(`Error while assign gender [message=${error.message}]`);
           resolve({
             name,
             gender: this.DEFAULT_GENDER,
-            probability: this.DEFAULT_PROBABILITY,
+            probability: this.DEFAULT_PROBABILITY
           });
         });
     });
