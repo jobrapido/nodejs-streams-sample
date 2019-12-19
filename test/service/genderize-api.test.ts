@@ -7,7 +7,7 @@ import { PersonWithGender } from "../../src/stream/types";
 
 describe("genderize api test suite", () => {
 
-  let clock: lolex.Clock;
+  let clock: lolex.InstalledClock<lolex.NodeClock>;
   const mockRestClient = Mock.ofType(RestClient);
   const configs = Mock.ofType(ApplicationConfig);
   configs.setup((instance) => instance.MAX_REQUESTS_PER_SECONDS).returns(() => 1);
