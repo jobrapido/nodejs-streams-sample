@@ -18,7 +18,7 @@
   "scripts": {
     "start": "node_modules/.bin/ts-node src/main.ts",
     "build": "npm run-script clean && npm run-script lint && tsc -p ./tsconfig.build.json",
-    "test": "jest --detectOpenHandles",
+    "test": "npm run-script lint && jest --detectOpenHandles",
     "lint": "tslint -c ./tslint.json -p tsconfig.json",
     "clean": "rimraf dist && rimraf bin"
   },

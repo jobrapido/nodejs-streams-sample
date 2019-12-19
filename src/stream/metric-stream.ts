@@ -1,9 +1,9 @@
+import { injectable, Scope } from "@msiviero/knit";
 import { Transform, TransformCallback } from "stream";
 import { ApplicationConfig } from "../config";
-import { injectable, Scope } from "@msiviero/knit";
 
 export enum MetricEvents {
-  THROUGHPUT = "THROUGHPUT"
+  THROUGHPUT = "THROUGHPUT",
 }
 @injectable(Scope.Singleton)
 export class MetricStream extends Transform {
@@ -30,7 +30,7 @@ export class MetricStream extends Transform {
       const sampleDuration = end[0] + end[1] / 1e9; // end[0]=seconds, end[1]=nanoseconds
       this.emit(
         MetricEvents.THROUGHPUT,
-        (this.sampleItems / sampleDuration).toFixed(3)
+        (this.sampleItems / sampleDuration).toFixed(3),
       );
       this.sampleItems = 0;
     }

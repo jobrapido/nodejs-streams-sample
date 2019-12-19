@@ -7,7 +7,7 @@ import { logger } from "./logger";
 import { AssignGenderTransformStream } from "./stream/assign-gender";
 import { BufferTransformStream } from "./stream/buffer-stream";
 import { InputDecoderTransformStream } from "./stream/input-decoder";
-import { MetricStream, MetricEvents } from "./stream/metric-stream";
+import { MetricEvents, MetricStream } from "./stream/metric-stream";
 
 @injectable()
 export class GenderAssignerPipeline {
@@ -20,8 +20,8 @@ export class GenderAssignerPipeline {
     @inject("csv:stringifier") private readonly stringifier: Stringifier,
     @inject("csv:parser") private readonly csvParser: Parser,
     @inject("fs:input") private readonly fsInput: Readable,
-    @inject("fs:output") private readonly fsOutput: Writable
-  ) {}
+    @inject("fs:output") private readonly fsOutput: Writable,
+  ) { }
 
   public assignGender() {
     return new Promise(async (resolve, reject) => {
@@ -29,7 +29,7 @@ export class GenderAssignerPipeline {
 
       try {
         logger.info(
-          `Starting assign gender pipeline [in=${LOCAL_INPUT_FILE_NAME}, out=${LOCAL_OUTPUT_FILE_NAME}]`
+          `Starting assign gender pipeline [in=${LOCAL_INPUT_FILE_NAME}, out=${LOCAL_OUTPUT_FILE_NAME}]`,
         );
         this.fsInput
           .pipe(this.csvParser)
