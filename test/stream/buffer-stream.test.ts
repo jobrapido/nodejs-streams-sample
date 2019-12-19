@@ -11,13 +11,13 @@ describe("buffer transform stream test suite", () => {
 
         const underTest = new BufferTransformStream(configs.object);
         TestInputStream
-        .fromObjects(
-          {name: "name1"},
-          {name: "name2"},
-          {name: "name3"},
-          {name: "name4"},
-        )
-        .pipe(underTest);
+            .fromObjects(
+                { name: "name1" },
+                { name: "name2" },
+                { name: "name3" },
+                { name: "name4" },
+            )
+            .pipe(underTest);
 
         const expected = [
             [{ name: "name1" }, { name: "name2" }],
@@ -26,11 +26,11 @@ describe("buffer transform stream test suite", () => {
         const results: any[] = [];
 
         underTest
-        .on("data", (buffer) => results.push(buffer))
-        .on("end", () => {
-            expect(results).toEqual(expected);
-            done();
-        });
+            .on("data", (buffer) => results.push(buffer))
+            .on("end", () => {
+                expect(results).toEqual(expected);
+                done();
+            });
     });
 
     it("should flush correctly", (done) => {
@@ -39,13 +39,13 @@ describe("buffer transform stream test suite", () => {
 
         const underTest = new BufferTransformStream(configs.object);
         TestInputStream
-        .fromObjects(
-          {name: "name1"},
-          {name: "name2"},
-          {name: "name3"},
-          {name: "name4"},
-        )
-        .pipe(underTest);
+            .fromObjects(
+                { name: "name1" },
+                { name: "name2" },
+                { name: "name3" },
+                { name: "name4" },
+            )
+            .pipe(underTest);
 
         const expected = [
             [{ name: "name1" }, { name: "name2" }, { name: "name3" }],
@@ -54,10 +54,10 @@ describe("buffer transform stream test suite", () => {
         const results: any[] = [];
 
         underTest
-        .on("data", (buffer) => results.push(buffer))
-        .on("end", () => {
-            expect(results).toEqual(expected);
-            done();
-        });
+            .on("data", (buffer) => results.push(buffer))
+            .on("end", () => {
+                expect(results).toEqual(expected);
+                done();
+            });
     });
 });

@@ -6,13 +6,13 @@ describe("input decoder transform stream test suite", () => {
     it("should decode input correctly", (done) => {
         const underTest = new InputDecoderTransformStream();
         TestInputStream
-        .fromObjects(
-          ["name1"],
-          ["name2"],
-          ["name3"],
-          ["name4"],
-        )
-        .pipe(underTest);
+            .fromObjects(
+                ["name1"],
+                ["name2"],
+                ["name3"],
+                ["name4"],
+            )
+            .pipe(underTest);
 
         const expected = [
             { name: "name1" },
@@ -23,23 +23,23 @@ describe("input decoder transform stream test suite", () => {
         const results: any[] = [];
 
         underTest
-        .on("data", (buffer) => results.push(buffer))
-        .on("end", () => {
-            expect(results).toEqual(expected);
-            done();
-        });
+            .on("data", (buffer) => results.push(buffer))
+            .on("end", () => {
+                expect(results).toEqual(expected);
+                done();
+            });
     });
 
     it("should decode input correctly", (done) => {
         const underTest = new InputDecoderTransformStream();
         TestInputStream
-        .fromObjects(
-          ["name1"],
-          [""],
-          ["name3"],
-          [""],
-        )
-        .pipe(underTest);
+            .fromObjects(
+                ["name1"],
+                [""],
+                ["name3"],
+                [""],
+            )
+            .pipe(underTest);
 
         const expected = [
             { name: "name1" },
@@ -48,11 +48,11 @@ describe("input decoder transform stream test suite", () => {
         const results: any[] = [];
 
         underTest
-        .on("data", (buffer) => results.push(buffer))
-        .on("end", () => {
-            expect(results).toEqual(expected);
-            done();
-        });
+            .on("data", (buffer) => results.push(buffer))
+            .on("end", () => {
+                expect(results).toEqual(expected);
+                done();
+            });
     });
 
 });

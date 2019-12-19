@@ -14,10 +14,10 @@ export class GenderizeAPI {
     @inject("rest:client") private readonly client: RestClient,
     readonly configs: ApplicationConfig,
     @inject("config:search-limited") limited: boolean = true,
-    ) {
-      if (limited) {
+  ) {
+    if (limited) {
       this.genderize = stopcock(this.genderize, {
-        limit:  configs.MAX_REQUESTS_PER_SECONDS,
+        limit: configs.MAX_REQUESTS_PER_SECONDS,
         bucketSize: 1,
         interval: 1000,
       });

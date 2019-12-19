@@ -23,9 +23,9 @@ describe("assign gender transform stream test suite", () => {
   });
 
   it("should genderize correctly", (done) => {
-    const personWithGender1 = {name: "name1", gender: "male", probability: "0.97"};
-    const personWithGender2 = {name: "name2", gender: "female", probability: "0.87"};
-    const personWithGender3 = {name: "name3", gender: "male", probability: "0.57"};
+    const personWithGender1 = { name: "name1", gender: "male", probability: "0.97" };
+    const personWithGender2 = { name: "name2", gender: "female", probability: "0.87" };
+    const personWithGender3 = { name: "name3", gender: "male", probability: "0.57" };
 
     mockGenderizeAPI.setup((instance) => instance
       .genderize(record1.name))
@@ -65,9 +65,9 @@ describe("assign gender transform stream test suite", () => {
   });
 
   it("should return default values when genderize api throws error", (done) => {
-    const personWithGender1 = {name: "name1", gender: "male", probability: "0.97"};
-    const personWithGender2 = {name: "name2", gender: "NP", probability: "0.0"};
-    const personWithGender3 = {name: "name3", gender: "male", probability: "0.57"};
+    const personWithGender1 = { name: "name1", gender: "male", probability: "0.97" };
+    const personWithGender2 = { name: "name2", gender: "NP", probability: "0.0" };
+    const personWithGender3 = { name: "name3", gender: "male", probability: "0.57" };
 
     mockGenderizeAPI.setup((instance) => instance
       .genderize(record1.name))
