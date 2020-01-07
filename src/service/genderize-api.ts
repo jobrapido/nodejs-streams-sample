@@ -12,7 +12,7 @@ export class GenderizeAPI {
   constructor(
     @inject("rest:client") private readonly client: RestClient,
     @env("MAX_REQUESTS_PER_SECOND", 10, converters.number) private readonly maxRequestPerSecond: number,
-    @inject("config:search-limited") limited: boolean = true,
+    @env("LIMIT_API", true, (envValue) => envValue && envValue === "true") limited: boolean,
   ) {
     if (limited) {
       this.genderize = stopcock(this.genderize, {
@@ -24,7 +24,8 @@ export class GenderizeAPI {
   }
 
   public async genderize(name: string) {
-    const response = await this.client
+    const response = await this
+      .client
       .get<PersonWithGender>(`${GENDERIZE_API_URL}?name=${name}`, { acceptHeader: "application/json" });
 
     if (response.statusCode !== HttpCodes.OK) {

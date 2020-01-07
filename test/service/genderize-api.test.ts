@@ -25,8 +25,6 @@ describe("genderize api test suite", () => {
     result: {},
   };
 
-  let underTest: GenderizeAPI;
-
   beforeEach(() => {
     const now = Date.now();
     clock = lolex.install({ now });
@@ -34,8 +32,6 @@ describe("genderize api test suite", () => {
     mockRestClient
       .setup((instance) => instance.get(It.isAnyString(), It.isAny()))
       .returns(() => Promise.resolve(successResponse));
-
-    underTest = new GenderizeAPI(mockRestClient.object, 1);
   });
 
   afterEach(() => {
@@ -44,6 +40,8 @@ describe("genderize api test suite", () => {
   });
 
   it("should return result from api when api call is successful", async () => {
+
+    const underTest = new GenderizeAPI(mockRestClient.object, 1, true);
     const promise = underTest.genderize("fakeName");
     clock.tick(1000);
 
@@ -63,8 +61,7 @@ describe("genderize api test suite", () => {
       .setup((instance) => instance.get(It.isAny(), It.isAny()))
       .returns(() => Promise.resolve(failureResponse));
 
-    // tslint:disable-next-line:no-shadowed-variable
-    const underTest = new GenderizeAPI(mockFailingClient.object, 1);
+    const underTest = new GenderizeAPI(mockFailingClient.object, 1, true);
 
     underTest.genderize("fakeName")
       .then(() => done(new Error("Should fail!")))
@@ -95,8 +92,7 @@ describe("genderize api test suite", () => {
       .setup((instance) => instance.get(It.isAny(), It.isAny()))
       .returns(() => Promise.resolve(successResponse));
 
-    // tslint:disable-next-line:no-shadowed-variable
-    const underTest = new GenderizeAPI(multipleRequestsMockClient.object, 1);
+    const underTest = new GenderizeAPI(multipleRequestsMockClient.object, 1, true);
 
     const promises = [
       underTest.genderize("fakeName1"),
