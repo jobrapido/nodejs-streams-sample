@@ -1,8 +1,7 @@
-import { inject, injectable, Scope } from "@msiviero/knit";
+import { converters, env, inject, injectable, Scope } from "@msiviero/knit";
 import * as stopcock from "stopcock";
 import { HttpCodes } from "typed-rest-client/HttpClient";
 import { RestClient } from "typed-rest-client/RestClient";
-import { ApplicationConfig } from "../config";
 import { PersonWithGender } from "../stream/types";
 
 const GENDERIZE_API_URL = "https://api.genderize.io";
@@ -12,12 +11,12 @@ export class GenderizeAPI {
 
   constructor(
     @inject("rest:client") private readonly client: RestClient,
-    readonly configs: ApplicationConfig,
+    @env("MAX_REQUESTS_PER_SECOND", 10, converters.number) private readonly maxRequestPerSecond: number,
     @inject("config:search-limited") limited: boolean = true,
   ) {
     if (limited) {
       this.genderize = stopcock(this.genderize, {
-        limit: configs.MAX_REQUESTS_PER_SECONDS,
+        limit: this.maxRequestPerSecond,
         bucketSize: 1,
         interval: 1000,
       });

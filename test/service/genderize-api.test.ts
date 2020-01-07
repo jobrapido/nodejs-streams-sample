@@ -1,7 +1,6 @@
 import * as lolex from "lolex";
 import { RestClient } from "typed-rest-client";
 import { It, Mock, Times } from "typemoq";
-import { ApplicationConfig } from "../../src/config";
 import { GenderizeAPI } from "../../src/service/genderize-api";
 import { PersonWithGender } from "../../src/stream/types";
 
@@ -9,8 +8,6 @@ describe("genderize api test suite", () => {
 
   let clock: lolex.InstalledClock<lolex.NodeClock>;
   const mockRestClient = Mock.ofType(RestClient);
-  const configs = Mock.ofType(ApplicationConfig);
-  configs.setup((instance) => instance.MAX_REQUESTS_PER_SECONDS).returns(() => 1);
 
   const successResponse = {
     headers: {},
@@ -38,7 +35,7 @@ describe("genderize api test suite", () => {
       .setup((instance) => instance.get(It.isAnyString(), It.isAny()))
       .returns(() => Promise.resolve(successResponse));
 
-    underTest = new GenderizeAPI(mockRestClient.object, configs.object);
+    underTest = new GenderizeAPI(mockRestClient.object, 1);
   });
 
   afterEach(() => {
@@ -67,7 +64,7 @@ describe("genderize api test suite", () => {
       .returns(() => Promise.resolve(failureResponse));
 
     // tslint:disable-next-line:no-shadowed-variable
-    const underTest = new GenderizeAPI(mockFailingClient.object, configs.object);
+    const underTest = new GenderizeAPI(mockFailingClient.object, 1);
 
     underTest.genderize("fakeName")
       .then(() => done(new Error("Should fail!")))
@@ -99,7 +96,7 @@ describe("genderize api test suite", () => {
       .returns(() => Promise.resolve(successResponse));
 
     // tslint:disable-next-line:no-shadowed-variable
-    const underTest = new GenderizeAPI(multipleRequestsMockClient.object, configs.object);
+    const underTest = new GenderizeAPI(multipleRequestsMockClient.object, 1);
 
     const promises = [
       underTest.genderize("fakeName1"),

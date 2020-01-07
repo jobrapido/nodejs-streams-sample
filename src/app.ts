@@ -1,22 +1,23 @@
 
-import { injectable } from "@msiviero/knit";
+import { inject, injectable } from "@msiviero/knit";
+import { Logger } from "winston";
 import { GenderAssignerPipeline } from "./gender-assigner-pipeline";
-import { logger } from "./logger";
 
 @injectable()
 export class Application {
 
   constructor(
     private readonly pipeline: GenderAssignerPipeline,
+    @inject("app:logger") private readonly log: Logger,
   ) { }
 
   public async start() {
-    logger.info("Starting pipeline");
+    this.log.info("Starting pipeline");
     try {
       this.pipeline.assignGender();
-      logger.info(`AssignGender pipeline processed`);
+      this.log.info(`AssignGender pipeline processed`);
     } catch (error) {
-      logger.error(`Pipeline error [message=${error.message}]`, error);
+      this.log.error(`Pipeline error [message=${error.message}]`, error);
     }
   }
 }

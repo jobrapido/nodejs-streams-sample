@@ -2,9 +2,13 @@
 import { Container, Provider, Scope } from "@msiviero/knit";
 import { Parser } from "csv-parse";
 import { Stringifier } from "csv-stringify";
+import * as dotenv from "dotenv";
 import * as fs from "fs";
 import { RestClient } from "typed-rest-client";
 import { Application } from "./app";
+import { LoggerProvider } from "./provider/logger-provider";
+
+dotenv.config({ path: "./variables.env" });
 
 Container.getInstance()
   .registerTokenProvider(
@@ -31,6 +35,7 @@ Container.getInstance()
     },
     Scope.Singleton,
   )
+  .registerTokenProvider("app:logger", LoggerProvider, Scope.Singleton)
   .registerTokenProvider(
     "csv:parser",
     class implements Provider<Parser> {

@@ -1,15 +1,14 @@
 import { Mock } from "typemoq";
-import { ApplicationConfig } from "../../src/config";
+import { Logger } from "winston";
 import { BufferTransformStream } from "../../src/stream/buffer-stream";
 import { TestInputStream } from "../test-stream";
 
 describe("buffer transform stream test suite", () => {
 
-    it("should buffer correctly", (done) => {
-        const configs = Mock.ofType(ApplicationConfig);
-        configs.setup((instance) => instance.BUFFER_SIZE).returns(() => 2);
+    const logger = Mock.ofType<Logger>();
 
-        const underTest = new BufferTransformStream(configs.object);
+    it("should buffer correctly", (done) => {
+        const underTest = new BufferTransformStream(2, logger.object);
         TestInputStream
             .fromObjects(
                 { name: "name1" },
@@ -34,10 +33,7 @@ describe("buffer transform stream test suite", () => {
     });
 
     it("should flush correctly", (done) => {
-        const configs = Mock.ofType(ApplicationConfig);
-        configs.setup((instance) => instance.BUFFER_SIZE).returns(() => 3);
-
-        const underTest = new BufferTransformStream(configs.object);
+        const underTest = new BufferTransformStream(3, logger.object);
         TestInputStream
             .fromObjects(
                 { name: "name1" },
