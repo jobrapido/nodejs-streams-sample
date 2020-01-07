@@ -10,13 +10,13 @@ export class Application {
     private readonly pipeline: GenderAssignerPipeline,
   ) { }
 
-  public start() {
+  public async start() {
     logger.info("Starting pipeline");
-
-    this
-      .pipeline
-      .assignGender()
-      .then(() => logger.info(`AssignGender pipeline processed`))
-      .catch((error) => logger.error(`Pipeline error [message=${error.message}]`, error));
+    try {
+      this.pipeline.assignGender();
+      logger.info(`AssignGender pipeline processed`);
+    } catch (error) {
+      logger.error(`Pipeline error [message=${error.message}]`, error);
+    }
   }
 }

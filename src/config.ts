@@ -3,6 +3,8 @@ import * as dotenv from "dotenv";
 
 dotenv.config({ path: "./variables.env" });
 
+// TODO use config
+
 @injectable()
 export class ApplicationConfig {
 

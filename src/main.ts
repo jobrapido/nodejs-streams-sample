@@ -34,7 +34,7 @@ Container.getInstance()
   .registerTokenProvider(
     "csv:parser",
     class implements Provider<Parser> {
-      public provide = () => new Parser({ trim: true });
+      public provide = () => new Parser({ trim: true, columns: ["name"] }); // TODO centralize conf
     },
     Scope.Singleton,
   )

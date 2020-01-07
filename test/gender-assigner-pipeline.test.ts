@@ -1,4 +1,4 @@
-import { Parser } from "csv-parse";
+import { Options, Parser } from "csv-parse";
 import { Stringifier } from "csv-stringify";
 import { Mock, Times } from "typemoq";
 import { ApplicationConfig } from "../src/config";
@@ -6,15 +6,16 @@ import { GenderAssignerPipeline } from "../src/gender-assigner-pipeline";
 import { GenderizeAPI } from "../src/service/genderize-api";
 import { AssignGenderTransformStream } from "../src/stream/assign-gender";
 import { BufferTransformStream } from "../src/stream/buffer-stream";
-import { InputDecoderTransformStream } from "../src/stream/input-decoder";
 import { MetricStream } from "../src/stream/metric-stream";
 import { TestInputStream, TestOutStream } from "./test-stream";
+
+const parserOpts: Options = { trim: true, columns: ["name"] };
 
 describe("Gender assigner module", () => {
   it("test pipeline", async () => {
     const genderizeApi = Mock.ofType<GenderizeAPI>();
     const configs = Mock.ofType(ApplicationConfig);
-    const csvParser = new Parser({ trim: true });
+    const csvParser = new Parser(parserOpts);
     const stringifier = new Stringifier({});
 
     const resultName1 = { name: "name1", gender: "male", probability: "0.99" };
@@ -43,7 +44,6 @@ describe("Gender assigner module", () => {
       .setup((instance) => instance.genderize("name4"))
       .returns(() => Promise.resolve(resultName4));
 
-    const inputDecoder = new InputDecoderTransformStream();
     const bufferTransformStream = new BufferTransformStream(configs.object);
     const assignGenderTransformStream = new AssignGenderTransformStream(
       genderizeApi.object,
@@ -58,7 +58,6 @@ describe("Gender assigner module", () => {
 
     const underTest = new GenderAssignerPipeline(
       configs.object,
-      inputDecoder,
       bufferTransformStream,
       assignGenderTransformStream,
       metricStream,
@@ -90,7 +89,7 @@ describe("Gender assigner module", () => {
     const genderizeApi = Mock.ofType<GenderizeAPI>();
     const configs = Mock.ofType(ApplicationConfig);
     const metricStream = new MetricStream(configs.object);
-    const csvParser = new Parser({ trim: true });
+    const csvParser = new Parser(parserOpts);
     const stringifier = new Stringifier({});
 
     const resultName1 = { name: "name1", gender: "male", probability: "0.99" };
@@ -103,7 +102,6 @@ describe("Gender assigner module", () => {
       .setup((instance) => instance.genderize("name2"))
       .returns(() => Promise.reject(new Error("fake error")));
 
-    const inputDecoder = new InputDecoderTransformStream();
     const bufferTransformStream = new BufferTransformStream(configs.object);
     const assignGenderTransformStream = new AssignGenderTransformStream(genderizeApi.object);
 
@@ -115,7 +113,6 @@ describe("Gender assigner module", () => {
 
     const underTest = new GenderAssignerPipeline(
       configs.object,
-      inputDecoder,
       bufferTransformStream,
       assignGenderTransformStream,
       metricStream,
