@@ -5,6 +5,7 @@ import { Readable, Writable } from "stream";
 import { Logger } from "winston";
 import { AssignGenderTransformStream } from "./stream/assign-gender";
 import { BufferTransformStream } from "./stream/buffer-stream";
+import { InputDecoderTransformStream } from "./stream/input-decoder";
 import { MetricEvents, MetricStream } from "./stream/metric-stream";
 
 @injectable()
@@ -12,6 +13,7 @@ export class GenderAssignerPipeline {
   constructor(
     @env("LOCAL_INPUT_FILE_NAME", "input.csv") public readonly localInputFilename: string,
     @env("LOCAL_OUTPUT_FILE_NAME", "output.csv") public readonly localOutputFilename: string,
+    private readonly inputDecoder: InputDecoderTransformStream,
     private readonly bufferTransformStream: BufferTransformStream,
     private readonly assignGenderTransformStream: AssignGenderTransformStream,
     private readonly metricStream: MetricStream,
@@ -30,6 +32,7 @@ export class GenderAssignerPipeline {
 
         this.fsInput
           .pipe(this.csvParser)
+          .pipe(this.inputDecoder)
           .pipe(this.bufferTransformStream)
           .pipe(this.assignGenderTransformStream)
           .pipe(this.stringifier)

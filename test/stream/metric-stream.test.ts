@@ -11,8 +11,8 @@ describe("metric transform stream test suite", () => {
   it(`given a sampleRate and an stream of objects
   should emit metrics event with the expected throughput and
   should not tamper the stream of objects`, (done) => {
-
-    const underTest = new MetricStream(100);
+    const SAMPLE_SIZE = 100;
+    const underTest = new MetricStream(SAMPLE_SIZE);
 
     const objectStream = [
       ["record1"],
@@ -33,7 +33,7 @@ describe("metric transform stream test suite", () => {
     const results: any[] = [];
 
     const expectedThroughput = 2.0;
-    const tick = (100 * 1000) / (expectedThroughput * (100 - 1));
+    const tick = (SAMPLE_SIZE * 1000) / (expectedThroughput * (SAMPLE_SIZE - 1));
 
     underTest
       .on("data", (buffer) => {

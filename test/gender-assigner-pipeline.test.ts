@@ -6,10 +6,11 @@ import { GenderAssignerPipeline } from "../src/gender-assigner-pipeline";
 import { GenderizeAPI } from "../src/service/genderize-api";
 import { AssignGenderTransformStream } from "../src/stream/assign-gender";
 import { BufferTransformStream } from "../src/stream/buffer-stream";
+import { InputDecoderTransformStream } from "../src/stream/input-decoder";
 import { MetricStream } from "../src/stream/metric-stream";
 import { TestInputStream, TestOutStream } from "./test-stream";
 
-const parserOpts: Options = { trim: true, columns: ["name"] };
+const parserOpts: Options = { trim: true };
 const logger = Mock.ofType<Logger>();
 
 describe("Gender assigner module", () => {
@@ -44,6 +45,7 @@ describe("Gender assigner module", () => {
       .setup((instance) => instance.genderize("name4"))
       .returns(() => Promise.resolve(resultName4));
 
+    const inputDecoder = new InputDecoderTransformStream(logger.object);
     const bufferTransformStream = new BufferTransformStream(20, logger.object);
     const assignGenderTransformStream = new AssignGenderTransformStream(
       genderizeApi.object,
@@ -53,13 +55,12 @@ describe("Gender assigner module", () => {
 
     const chunk = `name1\nname2\nname3\nname4\n`;
     const inputStream = TestInputStream.fromBuffers(Buffer.from(chunk));
-    inputStream.pipe(process.stdout);
-
     const outputStream = TestOutStream.asBufferedStream<Buffer>();
 
     const underTest = new GenderAssignerPipeline(
       "LOCAL_INPUT_FILENAME",
       "LOCAL_OUTPUT_FILENAME",
+      inputDecoder,
       bufferTransformStream,
       assignGenderTransformStream,
       metricStream,
@@ -101,18 +102,18 @@ describe("Gender assigner module", () => {
       .setup((instance) => instance.genderize("name2"))
       .returns(() => Promise.reject(new Error("fake error")));
 
+    const inputDecoder = new InputDecoderTransformStream(logger.object);
     const bufferTransformStream = new BufferTransformStream(20, logger.object);
     const assignGenderTransformStream = new AssignGenderTransformStream(genderizeApi.object, logger.object);
 
     const chunk = `name1\nname2\n`;
     const inputStream = TestInputStream.fromBuffers(Buffer.from(chunk));
-    inputStream.pipe(process.stdout);
-
     const outputStream = TestOutStream.asBufferedStream<Buffer>();
 
     const underTest = new GenderAssignerPipeline(
       "LOCAL_INPUT_FILENAME",
       "LOCAL_OUTPUT_FILENAME",
+      inputDecoder,
       bufferTransformStream,
       assignGenderTransformStream,
       metricStream,

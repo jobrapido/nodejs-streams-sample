@@ -12,7 +12,7 @@ export class WriteStreamProvider implements Provider<WriteStream> {
 }
 
 export class CsvParserProvider implements Provider<Parser> {
-    public provide = () => new Parser({ trim: true, columns: ["name"] }); // TODO centralize conf
+    public provide = () => new Parser({ trim: true });
 }
 
 export class CsvStringifier implements Provider<Stringifier> {
