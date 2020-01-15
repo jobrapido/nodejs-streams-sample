@@ -1,11 +1,13 @@
-import { injectable, Scope } from "@msiviero/knit";
+import { inject, injectable, Scope } from "@msiviero/knit";
 import { Transform, TransformCallback } from "stream";
-import { logger } from "../logger";
+import { Logger } from "winston";
 
 @injectable(Scope.Singleton)
 export class InputDecoderTransformStream extends Transform {
 
-  constructor() {
+  constructor(
+    @inject("app:logger") private readonly log: Logger,
+  ) {
     super({ objectMode: true });
   }
 
@@ -16,7 +18,7 @@ export class InputDecoderTransformStream extends Transform {
         this.push({ name });
       }
     } catch (error) {
-      logger.error(`error while trying to decode input [error=${error}]`);
+        this.log.error(`error while trying to decode input [error=${error}]`);
     } finally {
       callback();
     }

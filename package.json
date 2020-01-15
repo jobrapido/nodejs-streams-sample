@@ -37,7 +37,7 @@
     "typescript": "^3.7.3"
   },
   "dependencies": {
-    "@msiviero/knit": "^2.5.2",
+    "@msiviero/knit": "^2.5.4",
     "csv-parse": "^4.8.2",
     "csv-stringify": "^5.3.5",
     "dotenv": "^8.2.0",

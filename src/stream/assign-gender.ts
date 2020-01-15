@@ -1,6 +1,6 @@
-import { injectable, Scope } from "@msiviero/knit";
+import { inject, injectable, Scope } from "@msiviero/knit";
 import { Transform, TransformCallback } from "stream";
-import { logger } from "../logger";
+import { Logger } from "winston";
 import { GenderizeAPI } from "../service/genderize-api";
 import { Person, PersonWithGender } from "./types";
 
@@ -9,7 +9,10 @@ export class AssignGenderTransformStream extends Transform {
   private DEFAULT_GENDER = "NP";
   private DEFAULT_PROBABILITY = "0.0";
 
-  constructor(private readonly genderizeAPI: GenderizeAPI) {
+  constructor(
+    private readonly genderizeAPI: GenderizeAPI,
+    @inject("app:logger") private readonly log: Logger,
+  ) {
     super({ objectMode: true });
   }
 
@@ -24,7 +27,7 @@ export class AssignGenderTransformStream extends Transform {
         callback();
       })
       .catch((error: any) => {
-        logger.error(`Error in AssignGenderTransformStream [error=${error.message}]`);
+        this.log.error(`Error in AssignGenderTransformStream [error=${error.message}]`);
         callback();
       });
   }
@@ -40,12 +43,12 @@ export class AssignGenderTransformStream extends Transform {
             probability: result.probability || this.DEFAULT_PROBABILITY,
           };
 
-          logger.debug(`Name: ${person.name} - Gender: ${person.gender} - Probability: ${person.probability}`);
+          this.log.debug(`Name: ${person.name} - Gender: ${person.gender} - Probability: ${person.probability}`);
 
           resolve(person);
         })
         .catch((error) => {
-          logger.error(`Error while assign gender [message=${error.message}]`);
+          this.log.error(`Error while assign gender [message=${error.message}]`);
           resolve({
             name,
             gender: this.DEFAULT_GENDER,

@@ -1,4 +1,5 @@
 import { It, Mock, Times } from "typemoq";
+import { Logger } from "winston";
 import { GenderizeAPI } from "../../src/service/genderize-api";
 import { AssignGenderTransformStream } from "../../src/stream/assign-gender";
 import { Person } from "../../src/stream/types";
@@ -7,6 +8,7 @@ import { TestInputStream, TestOutStream } from "../test-stream";
 describe("assign gender transform stream test suite", () => {
 
   const mockGenderizeAPI = Mock.ofType<GenderizeAPI>();
+  const logger = Mock.ofType<Logger>();
 
   let underTest: AssignGenderTransformStream;
   let record1: Person;
@@ -19,7 +21,7 @@ describe("assign gender transform stream test suite", () => {
     record2 = { name: "name2" };
     record3 = { name: "name3" };
 
-    underTest = new AssignGenderTransformStream(mockGenderizeAPI.object);
+    underTest = new AssignGenderTransformStream(mockGenderizeAPI.object, logger.object);
   });
 
   it("should genderize correctly", (done) => {

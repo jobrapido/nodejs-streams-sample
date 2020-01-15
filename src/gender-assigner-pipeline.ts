@@ -1,9 +1,8 @@
-import { inject, injectable } from "@msiviero/knit";
+import { env, inject, injectable } from "@msiviero/knit";
 import { Parser } from "csv-parse";
 import { Stringifier } from "csv-stringify";
 import { Readable, Writable } from "stream";
-import { ApplicationConfig } from "./config";
-import { logger } from "./logger";
+import { Logger } from "winston";
 import { AssignGenderTransformStream } from "./stream/assign-gender";
 import { BufferTransformStream } from "./stream/buffer-stream";
 import { InputDecoderTransformStream } from "./stream/input-decoder";
@@ -12,7 +11,8 @@ import { MetricEvents, MetricStream } from "./stream/metric-stream";
 @injectable()
 export class GenderAssignerPipeline {
   constructor(
-    private readonly configs: ApplicationConfig,
+    @env("LOCAL_INPUT_FILE_NAME", "input.csv") public readonly localInputFilename: string,
+    @env("LOCAL_OUTPUT_FILE_NAME", "output.csv") public readonly localOutputFilename: string,
     private readonly inputDecoder: InputDecoderTransformStream,
     private readonly bufferTransformStream: BufferTransformStream,
     private readonly assignGenderTransformStream: AssignGenderTransformStream,
@@ -21,16 +21,15 @@ export class GenderAssignerPipeline {
     @inject("csv:parser") private readonly csvParser: Parser,
     @inject("fs:input") private readonly fsInput: Readable,
     @inject("fs:output") private readonly fsOutput: Writable,
+    @inject("app:logger") private readonly log: Logger,
   ) { }
 
   public assignGender() {
-    return new Promise(async (resolve, reject) => {
-      const { LOCAL_INPUT_FILE_NAME, LOCAL_OUTPUT_FILE_NAME } = this.configs;
-
+    return new Promise((resolve, reject) => {
       try {
-        logger.info(
-          `Starting assign gender pipeline [in=${LOCAL_INPUT_FILE_NAME}, out=${LOCAL_OUTPUT_FILE_NAME}]`,
-        );
+        this.log.info(
+          `Starting assign gender pipeline [in=${this.localInputFilename}, out=${this.localOutputFilename}]`);
+
         this.fsInput
           .pipe(this.csvParser)
           .pipe(this.inputDecoder)
@@ -38,19 +37,15 @@ export class GenderAssignerPipeline {
           .pipe(this.assignGenderTransformStream)
           .pipe(this.stringifier)
           .pipe(this.metricStream)
-          .on(MetricEvents.THROUGHPUT, this.logThroughput)
+          .on(MetricEvents.THROUGHPUT, (throughput: number) => this.log.info(`Current metrics throughput: ${throughput} elements/sec`))
           .pipe(this.fsOutput)
           .on("close", async () => {
-            logger.info("Finished");
+            this.log.info("Finished");
             resolve();
           });
       } catch (e) {
         reject(e);
       }
     });
-  }
-
-  private logThroughput(throughput: number) {
-    logger.info(`Current metrics throughput: ${throughput} elements/sec`);
   }
 }

@@ -1,7 +1,6 @@
 import * as lolex from "lolex";
 import { RestClient } from "typed-rest-client";
 import { It, Mock, Times } from "typemoq";
-import { ApplicationConfig } from "../../src/config";
 import { GenderizeAPI } from "../../src/service/genderize-api";
 import { PersonWithGender } from "../../src/stream/types";
 
@@ -9,8 +8,6 @@ describe("genderize api test suite", () => {
 
   let clock: lolex.InstalledClock<lolex.NodeClock>;
   const mockRestClient = Mock.ofType(RestClient);
-  const configs = Mock.ofType(ApplicationConfig);
-  configs.setup((instance) => instance.MAX_REQUESTS_PER_SECONDS).returns(() => 1);
 
   const successResponse = {
     headers: {},
@@ -28,8 +25,6 @@ describe("genderize api test suite", () => {
     result: {},
   };
 
-  let underTest: GenderizeAPI;
-
   beforeEach(() => {
     const now = Date.now();
     clock = lolex.install({ now });
@@ -37,8 +32,6 @@ describe("genderize api test suite", () => {
     mockRestClient
       .setup((instance) => instance.get(It.isAnyString(), It.isAny()))
       .returns(() => Promise.resolve(successResponse));
-
-    underTest = new GenderizeAPI(mockRestClient.object, configs.object);
   });
 
   afterEach(() => {
@@ -47,6 +40,8 @@ describe("genderize api test suite", () => {
   });
 
   it("should return result from api when api call is successful", async () => {
+
+    const underTest = new GenderizeAPI(mockRestClient.object, 1, true);
     const promise = underTest.genderize("fakeName");
     clock.tick(1000);
 
@@ -66,8 +61,7 @@ describe("genderize api test suite", () => {
       .setup((instance) => instance.get(It.isAny(), It.isAny()))
       .returns(() => Promise.resolve(failureResponse));
 
-    // tslint:disable-next-line:no-shadowed-variable
-    const underTest = new GenderizeAPI(mockFailingClient.object, configs.object);
+    const underTest = new GenderizeAPI(mockFailingClient.object, 1, true);
 
     underTest.genderize("fakeName")
       .then(() => done(new Error("Should fail!")))
@@ -98,8 +92,7 @@ describe("genderize api test suite", () => {
       .setup((instance) => instance.get(It.isAny(), It.isAny()))
       .returns(() => Promise.resolve(successResponse));
 
-    // tslint:disable-next-line:no-shadowed-variable
-    const underTest = new GenderizeAPI(multipleRequestsMockClient.object, configs.object);
+    const underTest = new GenderizeAPI(multipleRequestsMockClient.object, 1, true);
 
     const promises = [
       underTest.genderize("fakeName1"),

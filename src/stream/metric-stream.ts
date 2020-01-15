@@ -1,6 +1,5 @@
-import { injectable, Scope } from "@msiviero/knit";
+import { converters, env, injectable, Scope } from "@msiviero/knit";
 import { Transform, TransformCallback } from "stream";
-import { ApplicationConfig } from "../config";
 
 export enum MetricEvents {
   THROUGHPUT = "THROUGHPUT",
@@ -9,11 +8,11 @@ export enum MetricEvents {
 export class MetricStream extends Transform {
   private sampleItems = 0;
   private sampleStartTime = process.hrtime();
-  private sampleRate = 100;
 
-  constructor(readonly configs: ApplicationConfig) {
+  constructor(
+    @env("SAMPLE_SIZE", 100, converters.number) private readonly sampleRate: number,
+  ) {
     super({ objectMode: true });
-    this.sampleRate = configs.SAMPLE_SIZE;
   }
 
   public _transform(object: any, _: string, callback: TransformCallback) {

@@ -1,10 +1,13 @@
+import { Mock } from "typemoq";
+import { Logger } from "winston";
 import { InputDecoderTransformStream } from "../../src/stream/input-decoder";
 import { TestInputStream } from "../test-stream";
 
 describe("input decoder transform stream test suite", () => {
 
     it("should decode input correctly", (done) => {
-        const underTest = new InputDecoderTransformStream();
+        const logger = Mock.ofType<Logger>();
+        const underTest = new InputDecoderTransformStream(logger.object);
         TestInputStream
             .fromObjects(
                 ["name1"],
@@ -31,7 +34,8 @@ describe("input decoder transform stream test suite", () => {
     });
 
     it("should decode input correctly", (done) => {
-        const underTest = new InputDecoderTransformStream();
+        const logger = Mock.ofType<Logger>();
+        const underTest = new InputDecoderTransformStream(logger.object);
         TestInputStream
             .fromObjects(
                 ["name1"],
