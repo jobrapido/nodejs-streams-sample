@@ -1,7 +1,6 @@
-import { injectable, Scope } from "@msiviero/knit";
+import { converters, env, inject, injectable, Scope } from "@msiviero/knit";
 import { Transform, TransformCallback } from "stream";
-import { ApplicationConfig } from "../config";
-import { logger } from "../logger";
+import { Logger } from "winston";
 
 @injectable(Scope.Singleton)
 export class BufferTransformStream extends Transform {
@@ -9,14 +8,15 @@ export class BufferTransformStream extends Transform {
   private buffer: unknown[] = [];
 
   constructor(
-    private readonly configs: ApplicationConfig,
+    @env("BUFFER_SIZE", 20, converters.number) private readonly bufferSize: number,
+    @inject("app:logger") private readonly log: Logger,
   ) {
     super({ objectMode: true });
   }
 
   public _transform(object: unknown, _: string, callback: TransformCallback) {
     this.buffer.push(object);
-    if (this.buffer.length >= this.configs.BUFFER_SIZE) {
+    if (this.buffer.length >= this.bufferSize) {
       this.push(this.flushBuffer());
     }
     callback();
@@ -24,10 +24,10 @@ export class BufferTransformStream extends Transform {
 
   public _flush(callback: TransformCallback) {
     if (this.buffer.length > 0) {
-      logger.debug("Flushing buffer");
+      this.log.debug("Flushing buffer");
       this.push(this.flushBuffer());
     } else {
-      logger.debug("Buffer is already empty");
+      this.log.debug("Buffer is already empty");
     }
     callback();
   }

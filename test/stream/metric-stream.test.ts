@@ -1,0 +1,51 @@
+import * as lolex from "lolex";
+import { MetricStream } from "../../src/stream/metric-stream";
+import { TestInputStream } from "../test-stream";
+
+describe("metric transform stream test suite", () => {
+
+  let clock: lolex.Clock;
+
+  beforeEach(() => clock = lolex.install({ now: 0 }));
+
+  it(`given a sampleRate and an stream of objects
+  should emit metrics event with the expected throughput and
+  should not tamper the stream of objects`, (done) => {
+    const SAMPLE_SIZE = 100;
+    const underTest = new MetricStream(SAMPLE_SIZE);
+
+    const objectStream = [
+      ["record1"],
+      ["record2"],
+      ["record3"],
+      ["record4"],
+      ["record5"],
+      ["record6"],
+      ["record7"],
+      ["record8"],
+      ["record9"],
+      ["record10"]];
+
+    TestInputStream
+      .fromObjects(...objectStream)
+      .pipe(underTest);
+
+    const results: any[] = [];
+
+    const expectedThroughput = 2.0;
+    const tick = (SAMPLE_SIZE * 1000) / (expectedThroughput * (SAMPLE_SIZE - 1));
+
+    underTest
+      .on("data", (buffer) => {
+        clock.tick(tick);
+        results.push(buffer);
+      })
+      .on("metrics", (throughput: number) => {
+        expect(throughput).toBe(expectedThroughput.toFixed(3));
+      })
+      .on("end", () => {
+        expect(results).toEqual(objectStream);
+        done();
+      });
+  });
+});
