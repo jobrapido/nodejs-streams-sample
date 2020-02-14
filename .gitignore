@@ -3,4 +3,5 @@ dist
 bin
 data/output/*.csv
 .editorconfig
+.vscode
 
